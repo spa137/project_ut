@@ -4,16 +4,15 @@
   connection: network_cli
   gather_facts: false
   tasks:  
-  - name: початок
+  - name: продовжуємо
     routeros_command:
       commands:
 # Вимикаємо адмін 
         - /user disable admin
-
-
-
-
-
-
-
-  
+# Відкриваємо порти 222 та 80 (80 для лабораторних виключно)
+        - /ip firewall filter add chain=input protocol=tcp dst-port=222 action=accept in-interface=ether1
+        - /ip firewall filter add chain=input protocol=tcp dst-port=80 action=accept in-interface=ether1
+# Робимо маскарадінг
+        - /ip firewall nat add chain=srcnat action=masquerade out-interface=ether1
+  - name: debug print
+    debug: var=adre_print.stdout_lines
